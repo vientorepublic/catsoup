@@ -1,7 +1,3 @@
-#ifdef _WIN32
-  #define _CRT_SECURE_NO_WARNINGS
-#endif
-
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -130,10 +126,20 @@ int main() {
   char catName[20];
   printMainScreen();
   printf("야옹이의 이름을 지어주세요 >> ");
-  scanf("%s", catName);
+  while (1) {
+      fgets(catName, sizeof(catName), stdin);
+      catName[strcspn(catName, "\n")] = '\0'; // 개행 문자 제거
+
+      if (strlen(catName) == 0) {
+          printf("이름은 비어 있을 수 없습니다. 다시 입력해주세요 >> ");
+      } else if (strlen(catName) > 19) {
+          printf("이름은 19자 이하여야 합니다. 다시 입력해주세요 >> ");
+      } else {
+          break;
+      }
+  }
   printf("야옹이의 이름은 %s 입니다.\n", catName);
   sleep(1);
-  // 콘솔 지우기
   system(CLEAR_CONSOLE);
   int soupCount = 0;
   int intimacy = 2;
@@ -148,7 +154,9 @@ int main() {
       moveCat(&catPosition, intimacy, catName);
 
       printf("\n어떤 상호작용을 하시겠습니까? 0. 아무것도 하지 않음 1. 긁어 주기\n>> ");
-      scanf("%d", &choice);
+      char input[10];
+      fgets(input, sizeof(input), stdin);
+      choice = atoi(input);
 
       if (choice == 0) {
           printf("아무것도 하지 않습니다.\n");
@@ -185,12 +193,9 @@ int main() {
       printf("현재 친밀도 : %d\n", intimacy);
       sleep(2);
 
-      // 즉시 상태 반영
       system(CLEAR_CONSOLE);
       printState(soupCount, intimacy);
       renderRoom(catPosition, &soupCount, catName);
-      // printf("현재 친밀도 : %d\n", intimacy);
-      // sleep(2);
   }
 
   return 0;
