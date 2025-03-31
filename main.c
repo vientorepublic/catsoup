@@ -46,7 +46,7 @@ void printState(int soupCount, int intimacy) {
 }
 
 // 방을 그리는 함수
-void renderRoom(int catPosition, int *soupCount) {
+void renderRoom(int catPosition, int *soupCount, char *catName) {
   printf("\n");
   for (int i = 0; i < ROOM_WIDTH + 2; i++) {
     printf("#");
@@ -81,6 +81,10 @@ void renderRoom(int catPosition, int *soupCount) {
     printf("#");
   }
   printf("\n");
+
+  if (catPosition == HME_POS) {
+    printf("%s은(는) 자신의 집에서 편안함을 느낍니다.\n", catName);
+  }
 
   if (catPosition == BWL_PO) {
     const char *soups[] = {"감자 수프", "양송이 수프", "브로콜리 수프"};
@@ -139,7 +143,7 @@ int main() {
   while (1) {
       system(CLEAR_CONSOLE);
       printState(soupCount, intimacy);
-      renderRoom(catPosition, &soupCount);
+      renderRoom(catPosition, &soupCount, catName);
 
       moveCat(&catPosition, intimacy, catName);
 
@@ -184,7 +188,7 @@ int main() {
       // 즉시 상태 반영
       system(CLEAR_CONSOLE);
       printState(soupCount, intimacy);
-      renderRoom(catPosition, &soupCount);
+      renderRoom(catPosition, &soupCount, catName);
       // printf("현재 친밀도 : %d\n", intimacy);
       // sleep(2);
   }
