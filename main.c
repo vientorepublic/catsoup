@@ -2,6 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 
+// Add the function prototype for rollDice
+int rollDice();
+
 #ifdef _WIN32
   #include <windows.h>
   #define sleep(seconds) Sleep((seconds) * 1000)
@@ -33,6 +36,43 @@ void printState(int soupCount, int intimacy) {
     printf("================================================\n");
 }
 
+void renderRoom(int catPosition, int soupCount) {
+    printf("\n##########\n");
+    printf("#H B     #\n");
+    for (int i = 0; i < 10; i++) {
+        if (i == catPosition) {
+            printf("C");
+        } else {
+            printf(" ");
+        }
+    }
+    printf("#\n##########\n");
+    if (catPosition == 2) {
+        const char *soups[] = {"감자 수프", "양송이 수프", "브로콜리 수프"};
+        const char *selectedSoup = soups[rand() % 3]; // Randomly select a soup
+        printf("야옹이가 %s를 만들었습니다!\n", selectedSoup);
+        soupCount++;
+    }
+}
+
+void moveCat(int *catPosition, int intimacy, char *catName) {
+    printf("\n%s 이동: 집사와 친밀할수록 냄비 쪽으로 갈 확률이 높아집니다.\n", catName);
+    printf("주사위 눈이 %d 이상이면 냄비 쪽으로 이동합니다.\n", 6 - intimacy);
+    printf("주사위를 굴립니다. 또르륵...\n");
+    int dice = rollDice();
+    sleep(1);
+    printf("%d이(가) 나왔습니다!\n", dice);
+    if (dice >= 6 - intimacy && *catPosition < 2) {
+        (*catPosition)++;
+        printf("냄비 쪽으로 움직입니다.\n");
+    } else if (*catPosition > 0) {
+        (*catPosition)--;
+        printf("집 쪽으로 움직입니다.\n");
+    } else {
+        printf("야옹이는 움직이지 않았습니다.\n");
+    }
+}
+
 int rollDice() {
     return rand() % 6 + 1; // Random number between 1 and 6
 }
@@ -58,12 +98,16 @@ int main() {
   int soupCount = 0;
   int intimacy = 2;
   int choice;
+  int catPosition = 0; // 0: 집, 1: 중간, 2: 냄비
 
   while (1) {
       system(CLEAR_CONSOLE);
       printState(soupCount, intimacy);
+      renderRoom(catPosition, soupCount);
 
-      printf("어떤 상호작용을 하시겠습니까? 0. 아무것도 하지 않음 1. 긁어 주기\n>> ");
+      moveCat(&catPosition, intimacy, catName);
+
+      printf("\n어떤 상호작용을 하시겠습니까? 0. 아무것도 하지 않음 1. 긁어 주기\n>> ");
       scanf("%d", &choice);
 
       if (choice == 0) {
@@ -71,6 +115,7 @@ int main() {
           printf("4/6의 확률로 친밀도가 떨어집니다.\n");
           printf("주사위를 굴립니다. 또르륵...\n");
           int dice = rollDice();
+          sleep(1);
           printf("%d이(가) 나왔습니다!\n", dice);
           if (dice <= 4) {
               intimacy = (intimacy > 0) ? intimacy - 1 : 0;
@@ -83,6 +128,7 @@ int main() {
           printf("2/6의 확률로 친밀도가 높아집니다.\n");
           printf("주사위를 굴립니다. 또르륵...\n");
           int dice = rollDice();
+          sleep(1);
           printf("%d이(가) 나왔습니다!\n", dice);
           if (dice >= 5) {
               intimacy = (intimacy < 4) ? intimacy + 1 : 4;
