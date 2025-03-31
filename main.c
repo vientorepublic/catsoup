@@ -2,9 +2,9 @@
 #include <string.h>
 #include <stdlib.h>
 
-// Add the function prototype for rollDice
 int rollDice();
 
+// OS에 따라 sleep 함수 정의
 #ifdef _WIN32
   #include <windows.h>
   #define sleep(seconds) Sleep((seconds) * 1000)
@@ -14,6 +14,7 @@ int rollDice();
   #error "Unsupported OS"
 #endif
 
+// OS에 따라 콘솔 지우기 명령어 정의
 #ifdef _WIN32
   #define CLEAR_CONSOLE "cls"
 #elif defined(__linux__) || defined(__APPLE__)
@@ -22,6 +23,7 @@ int rollDice();
   #define CLEAR_CONSOLE ""
 #endif
 
+// 게임 상태 출력
 void printState(int soupCount, int intimacy) {
     printf("==================== 현재 상태 ===================\n");
     printf("현재까지 만든 수프: %d개\n", soupCount);
@@ -36,25 +38,31 @@ void printState(int soupCount, int intimacy) {
     printf("================================================\n");
 }
 
-void renderRoom(int catPosition, int soupCount) {
-    printf("\n##########\n");
-    printf("#H B     #\n");
-    for (int i = 0; i < 10; i++) {
-        if (i == catPosition) {
-            printf("C");
-        } else {
-            printf(" ");
-        }
+// 방을 그리는 함수
+void renderRoom(int catPosition, int *soupCount) {
+  printf("\n##########\n");
+  printf("# H   B  #\n");
+  printf("#        #\n");
+  printf("#        #\n");
+  for (int i = 0; i < 10; i++) {
+    if (i == catPosition) {
+      printf("C");
+    } else if (i < catPosition) {
+      printf(".");
+    } else {
+      printf(" ");
     }
-    printf("#\n##########\n");
-    if (catPosition == 2) {
-        const char *soups[] = {"감자 수프", "양송이 수프", "브로콜리 수프"};
-        const char *selectedSoup = soups[rand() % 3]; // Randomly select a soup
-        printf("야옹이가 %s를 만들었습니다!\n", selectedSoup);
-        soupCount++;
-    }
+  }
+  printf("#\n##########\n");
+  if (catPosition == 2) {
+    const char *soups[] = {"감자 수프", "양송이 수프", "브로콜리 수프"};
+    const char *selectedSoup = soups[rand() % 3]; // 수프 랜덤 선택
+    printf("야옹이가 %s를 만들었습니다!\n", selectedSoup);
+    (*soupCount)++;
+  }
 }
 
+// 고양이 이동 함수
 void moveCat(int *catPosition, int intimacy, char *catName) {
     printf("\n%s 이동: 집사와 친밀할수록 냄비 쪽으로 갈 확률이 높아집니다.\n", catName);
     printf("주사위 눈이 %d 이상이면 냄비 쪽으로 이동합니다.\n", 6 - intimacy);
@@ -73,28 +81,28 @@ void moveCat(int *catPosition, int intimacy, char *catName) {
     }
 }
 
+// 메인 화면 출력 함수
+void printMainScreen() {
+  printf("** 야옹이와 수프 **\n\n");
+  printf(" /\\_/\\\n");
+  printf("( o.o )\n");
+  printf(" > ^ <\n\n");
+}
+
+// 주사위를 굴리는 함수
 int rollDice() {
-    return rand() % 6 + 1; // Random number between 1 and 6
+    return rand() % 6 + 1;
 }
 
 int main() {
   char catName[20];
-
-  // Print the title
-  printf("** 야옹이와 수프 **\n\n");
-  // Cat ASCII art
-  printf(" /\\_/\\\n");
-  printf("( o.o )\n");
-  printf(" > ^ <\n\n");
-  // Prompt the user for input
+  printMainScreen();
   printf("야옹이의 이름을 지어주세요 >> ");
   scanf("%s", catName);
-  // Print the cat's name
   printf("야옹이의 이름은 %s 입니다.\n", catName);
   sleep(1);
-  // Clear the console
+  // 콘솔 지우기
   system(CLEAR_CONSOLE);
-  // Start the game
   int soupCount = 0;
   int intimacy = 2;
   int choice;
@@ -103,7 +111,7 @@ int main() {
   while (1) {
       system(CLEAR_CONSOLE);
       printState(soupCount, intimacy);
-      renderRoom(catPosition, soupCount);
+      renderRoom(catPosition, &soupCount);
 
       moveCat(&catPosition, intimacy, catName);
 
