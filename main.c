@@ -23,6 +23,8 @@
 int rollDice();
 
 // 방 출력 관련 상수
+// HOME_POS와 BOWL_POS 사이에 최소한 고양이가 이동할 수 있는 공간이 필요하므로,
+// 최소 ROOM_WIDTH는 4 (HOME_POS + 1칸 이동 공간 + BOWL_POS) 이상이어야 합니다.
 #define ROOM_WIDTH 10
 #define HOME_POS 1
 #define BOWL_POS (ROOM_WIDTH - 2)
@@ -100,7 +102,7 @@ void renderRoom(int catPosition, int *soupCount, char *catName) {
 
   if (catPosition == BOWL_POS) {
     const char *soups[] = {"감자 수프", "양송이 수프", "브로콜리 수프"};
-    const char *selectedSoup = soups[rand() % 3]; // 수프 랜덤 선택
+    const char *selectedSoup = soups[rand() % 3];
     printf("야옹이가 %s를 만들었습니다!\n", selectedSoup);
     (*soupCount)++;
   }
