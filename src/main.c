@@ -213,11 +213,11 @@ void handleInteraction(int *choice, int *intimacy, char *catName) {
 // 메인 함수
 int main() {
     srand(time(NULL));
-    char catName[20];
-    int soupCount = 0;
-    int intimacy = 2;
-    int choice;
-    int catPosition = 0;
+    char catName[20]; // 고양이 이름
+    int soupCount = 0; // 수프 개수
+    int intimacy = 2; // 친밀도
+    int choice; // 상호작용 선택
+    int catPosition = 0; // 고양이 위치
 
     printMainScreen();
     getCatName(catName);
