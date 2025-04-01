@@ -151,98 +151,99 @@ int rollDice() {
     return result;
 }
 
+// 고양이 이름 받는 함수
+void getCatName(char *catName) {
+    while (1) {
+        printf("야옹이의 이름을 지어주세요 >> ");
+        fgets(catName, 20, stdin);
+        catName[strcspn(catName, "\n")] = '\0'; // Remove newline character
+
+        if (strlen(catName) == 0) {
+            printf("이름은 비어 있을 수 없습니다. 다시 입력해주세요 >> ");
+        } else if (strlen(catName) > 19) {
+            printf("이름은 19자 이하여야 합니다. 다시 입력해주세요 >> ");
+        } else if (strcmp(catName, "DEBUG") == 0) {
+            printf("DEBUG 모드로 실행합니다.\n");
+            DEBUG_MODE = 1;
+            break;
+        } else {
+            break;
+        }
+    }
+    printf("야옹이의 이름은 %s 입니다.\n", catName);
+}
+
+// 상호작용 핸들링 함수
+void handleInteraction(int *choice, int *intimacy, char *catName) {
+    if (*choice == 0) {
+        printf("아무것도 하지 않습니다.\n");
+        printf("4/6의 확률로 친밀도가 떨어집니다.\n");
+        printf("주사위를 굴립니다. 또르륵...\n");
+        int dice = rollDice();
+        sleep(1);
+        printf("%d이(가) 나왔습니다!\n", dice);
+        if (dice <= 4) {
+            *intimacy = (*intimacy > 0) ? *intimacy - 1 : 0;
+            printf("친밀도가 떨어졌습니다.\n");
+        } else {
+            printf("다행히 친밀도가 떨어지지 않았습니다.\n");
+        }
+    } else if (*choice == 1) {
+        printf("%s의 턱을 긁어주었습니다.\n", catName);
+        printf("2/6의 확률로 친밀도가 높아집니다.\n");
+        printf("주사위를 굴립니다. 또르륵...\n");
+        int dice = rollDice();
+        sleep(1);
+        printf("%d이(가) 나왔습니다!\n", dice);
+        if (dice >= 5) {
+            *intimacy = (*intimacy < 4) ? *intimacy + 1 : 4;
+            printf("친밀도가 높아졌습니다.\n");
+        } else {
+            printf("친밀도는 그대로입니다.\n");
+        }
+    } else if (*choice == 2) {
+        printf("게임을 종료합니다.\n");
+    } else {
+        printf("잘못된 입력입니다. 다시 시도하세요.\n");
+    }
+}
+
+// 메인 함수
 int main() {
-  srand(time(NULL));
-  char catName[20];
-  int soupCount = 0;
-  int intimacy = 2;
-  int choice;
-  int catPosition = 0; // 0: 집, 1: 중간, 2: 냄비
+    srand(time(NULL));
+    char catName[20];
+    int soupCount = 0;
+    int intimacy = 2;
+    int choice;
+    int catPosition = 0;
 
-  printMainScreen();
-  printf("야옹이의 이름을 지어주세요 >> ");
-  while (1) {
-      fgets(catName, sizeof(catName), stdin);
-      catName[strcspn(catName, "\n")] = '\0'; // 개행 문자 제거
+    printMainScreen();
+    getCatName(catName);
+    sleep(1);
 
-      if (strlen(catName) == 0) {
-          printf("이름은 비어 있을 수 없습니다. 다시 입력해주세요 >> ");
-      } else if (strlen(catName) > 19) {
-          printf("이름은 19자 이하여야 합니다. 다시 입력해주세요 >> ");
-      } else if (strcmp(catName, "DEBUG") == 0) {
-          printf("DEBUG 모드로 실행합니다.\n");
-          DEBUG_MODE = 1;
-          break;
-      } else {
-          break;
-      }
-  }
-  printf("야옹이의 이름은 %s 입니다.\n", catName);
+    while (1) {
+        system(CLEAR_CONSOLE);
+        printState(soupCount, intimacy, catPosition);
+        renderRoom(catPosition, &soupCount, catName);
 
-  sleep(1);
-  system(CLEAR_CONSOLE);
+        moveCat(&catPosition, intimacy, catName);
 
-  if (DEBUG_MODE == 1) {
-    printf("[DEBUG] Starting main loop with initial values: soupCount=%d, intimacy=%d, catPosition=%d\n", soupCount, intimacy, catPosition);
-  }
+        printf("\n어떤 상호작용을 하시겠습니까? 0. 아무것도 하지 않음 1. 긁어 주기 2. 게임 종료\n>> ");
+        char input[10];
+        fgets(input, sizeof(input), stdin);
+        choice = atoi(input);
 
-  while (1) {
-      system(CLEAR_CONSOLE);
-      printState(soupCount, intimacy, catPosition);
-      renderRoom(catPosition, &soupCount, catName);
+        if (DEBUG_MODE == 1) {
+            printf("[DEBUG] Loop iteration: choice=%d, soupCount=%d, intimacy=%d, catPosition=%d\n", choice, soupCount, intimacy, catPosition);
+        }
 
-      moveCat(&catPosition, intimacy, catName);
+        handleInteraction(&choice, &intimacy, catName);
 
-      printf("\n어떤 상호작용을 하시겠습니까? 0. 아무것도 하지 않음 1. 긁어 주기 2. 게임 종료\n>> ");
-      char input[10];
-      fgets(input, sizeof(input), stdin);
-      choice = atoi(input);
+        if (choice == 2) break;
 
-      if (DEBUG_MODE == 1) {
-          printf("[DEBUG] Loop iteration: choice=%d, soupCount=%d, intimacy=%d, catPosition=%d\n", choice, soupCount, intimacy, catPosition);
-      }
+        printf("현재 친밀도 : %d\n", intimacy);
+        sleep(2);
+    }
 
-      if (choice == 0) {
-          printf("아무것도 하지 않습니다.\n");
-          printf("4/6의 확률로 친밀도가 떨어집니다.\n");
-          printf("주사위를 굴립니다. 또르륵...\n");
-          int dice = rollDice();
-          sleep(1);
-          printf("%d이(가) 나왔습니다!\n", dice);
-          if (dice <= 4) {
-              intimacy = (intimacy > 0) ? intimacy - 1 : 0;
-              printf("친밀도가 떨어졌습니다.\n");
-          } else {
-              printf("다행히 친밀도가 떨어지지 않았습니다.\n");
-          }
-      } else if (choice == 1) {
-          printf("%s의 턱을 긁어주었습니다.\n", catName);
-          printf("2/6의 확률로 친밀도가 높아집니다.\n");
-          printf("주사위를 굴립니다. 또르륵...\n");
-          int dice = rollDice();
-          sleep(1);
-          printf("%d이(가) 나왔습니다!\n", dice);
-          if (dice >= 5) {
-              intimacy = (intimacy < 4) ? intimacy + 1 : 4;
-              printf("친밀도가 높아졌습니다.\n");
-          } else {
-              printf("친밀도는 그대로입니다.\n");
-          }
-      } else if (choice == 2) {
-          printf("게임을 종료합니다.\n");
-          break;
-      } else {
-          printf("잘못된 입력입니다. 다시 시도하세요.\n");
-          continue;
-      }
-
-      printf("현재 친밀도 : %d\n", intimacy);
-      sleep(2);
-
-      system(CLEAR_CONSOLE);
-      printState(soupCount, intimacy, catPosition);
-      renderRoom(catPosition, &soupCount, catName);
-  }
-
-  return 0;
+    return 0;
 }
