@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <time.h>
 #include <stdlib.h>
 
 #ifdef _WIN32
@@ -151,6 +152,7 @@ int rollDice() {
 }
 
 int main() {
+  srand(time(NULL));
   char catName[20];
   int soupCount = 0;
   int intimacy = 2;
