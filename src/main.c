@@ -158,7 +158,7 @@ void getCatName(char *catName) {
     while (1) {
         printf("야옹이의 이름을 지어주세요 >> ");
         fgets(catName, 20, stdin);
-        catName[strcspn(catName, "\n")] = '\0'; // Remove newline character
+        catName[strcspn(catName, "\n")] = '\0';
 
         if (strlen(catName) == 0) {
             printf("이름은 비어 있을 수 없습니다. 다시 입력해주세요 >> ");
