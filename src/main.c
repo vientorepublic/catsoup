@@ -139,9 +139,13 @@ void printMainScreen() {
     printf("[DEBUG] printMainScreen called\n");
   }
   printf("**** 야옹이와 수프 ****\n\n");
-  printf(" /\\_/\\\n");
-  printf("( o.o )\n");
-  printf(" > ^ <\n\n");
+  printf("      /\\_/\\\n");
+  printf(" /\\  / o o \\\n");
+  printf("//\\\\ \\~(*)~/\n");
+  printf("`  \\/   ^ /\n");
+  printf("   | \\|| ||\n");
+  printf("   \\ '|| ||\n");
+  printf("    \\)()-())\n\n");
 }
 
 // 주사위를 굴리는 함수
