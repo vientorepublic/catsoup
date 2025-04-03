@@ -71,14 +71,6 @@ void renderRoom(int catPosition, int *soupCount, char *catName) {
   }
   printf("B #\n");
 
-  for (int i = 0; i < 2; i++) {
-    printf("#");
-    for (int j = 0; j < ROOM_WIDTH; j++) {
-      printf(" ");
-    }
-    printf("#\n");
-  }
-
   printf("#");
   for (int i = 0; i < ROOM_WIDTH; i++) {
     if (i == catPosition) {
