@@ -222,9 +222,8 @@ int main() {
     while (1) {
         system(CLEAR_CONSOLE);
         printState(soupCount, intimacy, catPosition);
-        renderRoom(catPosition, &soupCount, catName);
-
         moveCat(&catPosition, intimacy, catName);
+        renderRoom(catPosition, &soupCount, catName);
 
         printf("\n어떤 상호작용을 하시겠습니까? 0. 아무것도 하지 않음 1. 긁어 주기 2. 게임 종료\n>> ");
         char input[10];
