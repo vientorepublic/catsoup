@@ -49,6 +49,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: catsoup-binary-ubuntu-latest
+          path: ./artifacts/ubuntu-latest
+
+      - name: Download build artifacts (Windows)
+        uses: actions/download-artifact@v4
+        with:
+          name: catsoup-binary-windows-latest
+          path: ./artifacts/windows-latest
+
+      - name: Download build artifacts (macOS)
+        uses: actions/download-artifact@v4
+        with:
+          name: catsoup-binary-macos-latest
+          path: ./artifacts/macos-latest
+
       - name: Set up GitHub CLI
         uses: actions/setup-go@v3
         with:
@@ -57,5 +75,8 @@ jobs:
       - name: Create Release
         run: |
           gh release create ${{ github.ref_name }} --repo "${{ github.repository }}" --title "Release ${{ github.ref_name }}" --generate-notes
+          gh release upload ${{ github.ref_name }} ./artifacts/ubuntu-latest/catsoup
+          gh release upload ${{ github.ref_name }} ./artifacts/windows-latest/catsoup
+          gh release upload ${{ github.ref_name }} ./artifacts/macos-latest/catsoup
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
