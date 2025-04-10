@@ -1,12 +1,12 @@
 name: Build/Release
 
 on:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
+  push:
+    tags:
+      - "v*"
 
 jobs:
   build:
@@ -41,35 +41,18 @@ jobs:
           path: ./catsoup
 
   release:
-    needs: build
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-
     steps:
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: catsoup-binary-ubuntu-latest
-          path: ./catsoup-ubuntu
-        # ...repeat for windows-latest and macos-latest...
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      - name: Set up GitHub CLI
+        uses: actions/setup-go@v3
         with:
-          tag_name: v${{ github.run_number }}
-          release_name: Release v${{ github.run_number }}
-          draft: false
-          prerelease: false
+          go-version: "^1.18"
 
-      - name: Upload binaries to release
-        uses: actions/upload-release-asset@v1
+      - name: Create Release
+        run: |
+          gh release create ${{ github.ref }} --repo "${{ github.repository }}" --title "Release ${{ github.ref }}" --generate-notes
         env:
-          GITHUB_TOKEN: ${{ secrets.TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./catsoup-ubuntu
-          asset_name: catsoup-ubuntu
-          asset_content_type: application/octet-stream
-        # ...repeat for windows and macOS binaries...
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
