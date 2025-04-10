@@ -10,19 +10,26 @@ HEADERS = $(wildcard $(SRCDIR)/*.h)
 OBJDIR = obj
 OBJS = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 
-all: $(TARGET)
+# Cross-compilation settings
+TARGET_LINUX = $(TARGET)-linux
+TARGET_MACOS = $(TARGET)-macos
 
-$(TARGET): $(OBJS)
+all: $(TARGET_LINUX) $(TARGET_MACOS)
+
+$(TARGET_LINUX): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+$(TARGET_MACOS): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c $(HEADERS)
-	@mkdir -p $(OBJDIR)
+	@mkdir -p $(OBJDIR) # Ensure obj directory exists
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJDIR) $(TARGET)
+	rm -rf $(OBJDIR) $(TARGET) $(TARGET_LINUX) $(TARGET_MACOS)
 
-run: all
+run: $(TARGET)
 	./$(TARGET)
 
 .PHONY: all clean run

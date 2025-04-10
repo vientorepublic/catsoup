@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include "platform.h"
-#include "constants.h"
 #include "utility.h"
 
 void handleInteraction(int *choice, int *intimacy, char *catName) {
