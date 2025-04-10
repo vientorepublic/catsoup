@@ -52,20 +52,8 @@ jobs:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: catsoup-binary-ubuntu-latest
-          path: ./artifacts/ubuntu-latest
-
-      - name: Download build artifacts (Windows)
-        uses: actions/download-artifact@v4
-        with:
-          name: catsoup-binary-windows-latest
-          path: ./artifacts/windows-latest
-
-      - name: Download build artifacts (macOS)
-        uses: actions/download-artifact@v4
-        with:
-          name: catsoup-binary-macos-latest
-          path: ./artifacts/macos-latest
+          name: catsoup-binary-${{ matrix.os }}
+          path: ./artifacts/${{ matrix.os }}
 
       - name: Set up GitHub CLI
         uses: actions/setup-go@v3
