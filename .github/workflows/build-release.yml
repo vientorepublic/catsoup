@@ -22,7 +22,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up build environment
+      - name: Set up build environment (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y build-essential
 
@@ -44,27 +44,30 @@ jobs:
           path: ./catsoup
 
   release:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Download build artifacts
+      - name: Download all build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: catsoup-binary-${{ matrix.os }}
-          path: ./artifacts/${{ matrix.os }}
+          pattern: catsoup-binary-*
+          path: ./artifacts
 
       - name: Set up GitHub CLI
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v4
         with:
-          go-version: "^1.18"
+          go-version: "^1.20"
+      - name: Install GitHub CLI
+        run: go install github.com/cli/go-github@latest
 
       - name: Create Release
         run: |
           gh release create ${{ github.ref_name }} --repo "${{ github.repository }}" --title "Release ${{ github.ref_name }}" --generate-notes
-          gh release upload ${{ github.ref_name }} ./artifacts/ubuntu-latest/catsoup
-          gh release upload ${{ github.ref_name }} ./artifacts/windows-latest/catsoup
-          gh release upload ${{ github.ref_name }} ./artifacts/macos-latest/catsoup
+          gh release upload ${{ github.ref_name }} ./artifacts/catsoup-binary-ubuntu-latest/catsoup
+          gh release upload ${{ github.ref_name }} ./artifacts/catsoup-binary-windows-latest/catsoup
+          gh release upload ${{ github.ref_name }} ./artifacts/catsoup-binary-macos-latest/catsoup
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
