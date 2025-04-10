@@ -2,23 +2,28 @@
 
 프로그래밍 실습 과제
 
+# 작성/테스트 환경
+
+- Macbook Pro M4 ARM64 (MacOS 15 Sequoia)
+- Apple clang 16.0.0 (clang-1600.0.26.3) POSIX compatible
+- C11
+- GNU Make 3.81
+
+# 크로스 컴파일
+
+Apple, Linux, Windows에서 크로스 컴파일 가능
+
+테스트 플랫폼:
+
+- Linux(x86_64, ARM64)
+- MacOS 15 Sequoia (ARM64)
+- Windows 11 (x86_64)
+
 # 컴파일
 
 ```
 make
 ```
-
-또는
-
-```
-gcc -o catsoup src/main.c
-```
-
-# 디버그 모드
-
-게임 실행 후 고양이 이름을 `DEBUG`로 지정하면 게임 내부의 변수 변화를 관찰할 수 있습니다.
-
-또는 소스코드의 `DEBUG_MODE` 변수 값을 `1`로 변경하십시오.
 
 # 인트로 & 준비
 
