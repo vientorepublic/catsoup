@@ -15,47 +15,53 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up build environment
+      - name: Set up build environment (Ubuntu)
         if: matrix.os == 'ubuntu-latest'
         run: sudo apt-get update && sudo apt-get install -y build-essential
-
-      - name: Set up build environment (Windows)
-        if: matrix.os == 'windows-latest'
-        run: choco install make
 
       - name: Set up build environment (macOS)
         if: matrix.os == 'macos-latest'
         run: brew install make
 
       - name: Build project
-        run: make
+        run: |
+          make
+          ls -al ./
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
-          name: catsoup-binary-${{ matrix.os }}
-          path: ./catsoup
+          name: catsoup-${{ matrix.os == 'ubuntu-latest' && 'linux' || 'macos' }}
+          path: ./catsoup-${{ matrix.os == 'ubuntu-latest' && 'linux' || 'macos' }}
 
   release:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Download all build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./artifacts
 
       - name: Set up GitHub CLI
-        uses: actions/setup-go@v3
+        uses: actions/setup-go@v5
         with:
           go-version: "^1.18"
 
       - name: Create Release
         run: |
           gh release create ${{ github.ref_name }} --repo "${{ github.repository }}" --title "Release ${{ github.ref_name }}" --generate-notes
+          gh release upload ${{ github.ref_name }} ./artifacts/catsoup-linux/catsoup-linux
+          gh release upload ${{ github.ref_name }} ./artifacts/catsoup-macos/catsoup-macos
         env:
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
