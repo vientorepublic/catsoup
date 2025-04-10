@@ -31,13 +31,15 @@ jobs:
         run: brew install make
 
       - name: Build project
-        run: make TARGET=${{ matrix.os == 'ubuntu-latest' && 'catsoup-linux' || 'catsoup-macos' }}
+        run: |
+          make TARGET=${{ matrix.os == 'ubuntu-latest' && 'catsoup-linux' || 'catsoup-macos' }}
+          ls -al ./
 
       - name: Upload build artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os == 'ubuntu-latest' && 'catsoup-linux' || 'catsoup-macos' }}
-          path: ./catsoup-${{ matrix.os == 'ubuntu-latest' && 'linux' || 'macos' }}
+          path: ./catsoup-${{ matrix.os == 'ubuntu-latest' && 'linux' || 'macos' }} || exit 1
 
   release:
     needs: build
