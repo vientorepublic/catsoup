@@ -32,7 +32,7 @@ jobs:
 
       - name: Build project
         run: |
-          make TARGET=${{ matrix.os == 'ubuntu-latest' && 'catsoup-linux' || 'catsoup-macos' }}
+          make
           ls -al ./
 
       - name: Upload build artifact

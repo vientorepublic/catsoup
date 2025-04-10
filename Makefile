@@ -29,7 +29,4 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c $(HEADERS)
 clean:
 	rm -rf $(OBJDIR) $(TARGET) $(TARGET_LINUX) $(TARGET_MACOS)
 
-run: $(TARGET)
-	./$(TARGET)
-
 .PHONY: all clean run
