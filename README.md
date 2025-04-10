@@ -1,5 +1,7 @@
 # 야옹이와 수프
 
+[![Build/Release](https://github.com/vientorepublic/catsoup/actions/workflows/build-release.yml/badge.svg)](https://github.com/vientorepublic/catsoup/actions/workflows/build-release.yml)
+
 프로그래밍 실습 과제
 
 # 작성/테스트 환경
