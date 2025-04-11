@@ -13,7 +13,7 @@ OBJS = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 # Cross-compilation settings
 TARGET_LINUX_X86_64 = $(TARGET)-linux-x86_64
 TARGET_LINUX_ARM64 = $(TARGET)-linux-arm64
-TARGET_MACOS = $(TARGET)-macos
+TARGET_MACOS = $(TARGET)-macos-arm64
 TARGET_WINDOWS = $(TARGET)-windows.exe
 
 all: $(TARGET_LINUX_X86_64) $(TARGET_LINUX_ARM64) $(TARGET_MACOS) $(TARGET_WINDOWS)
