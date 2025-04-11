@@ -11,14 +11,18 @@ OBJDIR = obj
 OBJS = $(patsubst $(SRCDIR)/%.c,$(OBJDIR)/%.o,$(SRCS))
 
 # Cross-compilation settings
-TARGET_LINUX = $(TARGET)-linux
-TARGET_MACOS = $(TARGET)-macos
-TARGET_WINDOWS = $(TARGET)-windows.exe
+TARGET_LINUX_X86_64 = $(TARGET)-linux-x86_64
+TARGET_LINUX_ARM64 = $(TARGET)-linux-arm64
+TARGET_MACOS = $(TARGET)-macos-arm64
+TARGET_WINDOWS = $(TARGET)-windows-x86_64.exe
 
-all: $(TARGET_LINUX) $(TARGET_MACOS) $(TARGET_WINDOWS)
+all: $(TARGET_LINUX_X86_64) $(TARGET_LINUX_ARM64) $(TARGET_MACOS) $(TARGET_WINDOWS)
 
-$(TARGET_LINUX): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^
+$(TARGET_LINUX_X86_64): $(OBJS)
+	$(CC) $(CFLAGS) -m64 -o $@ $^
+
+$(TARGET_LINUX_ARM64): $(OBJS)
+	$(CC) $(CFLAGS) -march=armv8-a -o $@ $^
 
 $(TARGET_MACOS): $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
@@ -31,6 +35,6 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c $(HEADERS)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OBJDIR) $(TARGET) $(TARGET_LINUX) $(TARGET_MACOS) $(TARGET_WINDOWS)
+	rm -rf $(OBJDIR) $(TARGET) $(TARGET_LINUX_X86_64) $(TARGET_LINUX_ARM64) $(TARGET_MACOS) $(TARGET_WINDOWS)
 
 .PHONY: all clean run
