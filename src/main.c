@@ -9,6 +9,9 @@
 #include "interaction.h"
 
 int main() {
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+#endif
     srand(time(NULL));
     char catName[20]; // 고양이 이름
     int soupCount = 0; // 수프 개수
