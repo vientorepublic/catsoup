@@ -68,14 +68,14 @@ jobs:
 
       - name: Get Workflow Run URL
         id: get_run_url
-        run: echo "run_url=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_ENV
+        run: echo "RUN_URL=${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" >> $GITHUB_ENV
 
       - name: Create Release
         run: |
           gh release create ${{ github.ref_name }} \
             --repo "${{ github.repository }}" \
             --title "Release ${{ github.ref_name }}" \
-            --notes "Workflow logs: ${{ env.run_url }}" \
+            --notes "Workflow logs: ${{ env.RUN_URL }}" \
             --generate-notes
           gh release upload ${{ github.ref_name }} ./artifacts/catsoup-linux-x86_64/catsoup-linux-x86_64
           gh release upload ${{ github.ref_name }} ./artifacts/catsoup-linux-arm64/catsoup-linux-arm64
