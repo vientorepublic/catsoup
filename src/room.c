@@ -39,5 +39,6 @@ void renderRoom(int catPosition, int *soupCount, char *catName) {
     const char *selectedSoup = soups[rand() % 3];
     printf("야옹이가 %s를 만들었습니다!\n", selectedSoup);
     (*soupCount)++;
+    printf("현재까지 만든 수프: %d개\n", *soupCount);
   }
 }
