@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "platform.h"
 #include "utility.h"
 
@@ -61,4 +62,21 @@ void handleInteraction(int *choice, int *intimacy, char *catName) {
     } else {
         printf("잘못된 입력입니다. 다시 시도하세요.\n");
     }
+}
+
+void openInteractionMenu(int *intimacy, char *catName) {
+    int choice;
+    char input[10];
+
+    printf("\n========== 상호작용 메뉴 ==========\n");
+    printf("1. 아무것도 하지 않음\n");
+    printf("2. 긁어 주기\n");
+    printf("3. 간식 주기\n");
+    printf("4. 장난감 던지기\n");
+    printf("===================================\n");
+    printf(">> ");
+    
+    fgets(input, sizeof(input), stdin);
+    choice = atoi(input);
+    handleInteraction(&choice, intimacy, catName);
 }
