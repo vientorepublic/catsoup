@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "constants.h"
 
 void renderRoom(int catPosition, int *soupCount, char *catName) {

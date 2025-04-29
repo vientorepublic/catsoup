@@ -1,53 +1,56 @@
 #include <stdio.h>
-#include <time.h>
 #include <stdlib.h>
-#include "platform.h"
-#include "utility.h"
+#include <time.h>
+
 #include "constants.h"
+#include "interaction.h"
+#include "platform.h"
 #include "room.h"
 #include "state.h"
-#include "interaction.h"
 #include "store.h"
+#include "utility.h"
 
 int main() {
 #ifdef _WIN32
-    SetConsoleOutputCP(CP_UTF8);
+  SetConsoleOutputCP(CP_UTF8);
 #endif
-    srand(time(NULL));
-    char catName[20]; // 고양이 이름
-    int soupCount = 0; // 수프 개수
-    int intimacy = 2; // 친밀도
-    int choice; // 상호작용 선택
-    int catPosition = 0; // 고양이 위치
+  srand(time(NULL));
+  char catName[20];     // 고양이 이름
+  int soupCount = 0;    // 수프 개수
+  int intimacy = 2;     // 친밀도
+  int choice;           // 상호작용 선택
+  int catPosition = 0;  // 고양이 위치
 
-    printMainScreen();
-    getCatName(catName);
-    sleep(1);
+  printMainScreen();
+  getCatName(catName);
+  sleep(1);
 
-    while (1) {
-        system(CLEAR_CONSOLE);
-        printState(soupCount, intimacy);
-        moveCat(&catPosition, intimacy, catName);
-        renderRoom(catPosition, &soupCount, catName);
+  while (1) {
+    system(CLEAR_CONSOLE);
+    printState(soupCount, intimacy);
+    moveCat(&catPosition, intimacy, catName);
+    renderRoom(catPosition, &soupCount, catName);
 
-        printf("\n어떤 것을 하시겠습니까? 1. 상호작용 메뉴 열기 2. 상점 메뉴 열기 3. 게임 종료\n>> ");
-        char input[10];
-        fgets(input, sizeof(input), stdin);
-        choice = atoi(input);
+    printf(
+        "\n어떤 것을 하시겠습니까? 1. 상호작용 메뉴 열기 2. 상점 메뉴 열기 3. "
+        "게임 종료\n>> ");
+    char input[10];
+    fgets(input, sizeof(input), stdin);
+    choice = atoi(input);
 
-        if (choice == 1) {
-            openInteractionMenu(&intimacy, catName);
-        } else if (choice == 2) {
-            openStore(&soupCount, &intimacy);
-        } else if (choice == 3) {
-            break;
-        } else {
-            handleInteraction(&choice, &intimacy, catName);
-        }
-
-        printf("현재 친밀도 : %d\n", intimacy);
-        sleep(2);
+    if (choice == 1) {
+      openInteractionMenu(&intimacy, catName);
+    } else if (choice == 2) {
+      openStore(&soupCount, &intimacy);
+    } else if (choice == 3) {
+      break;
+    } else {
+      handleInteraction(&choice, &intimacy, catName);
     }
 
-    return 0;
+    printf("현재 친밀도 : %d\n", intimacy);
+    sleep(2);
+  }
+
+  return 0;
 }
