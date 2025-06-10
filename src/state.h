@@ -22,14 +22,12 @@ typedef struct {
 
 // 상태 출력 (v2)
 void printStateV2(const GameState *state, const char *catName);
-void printState(int soupCount, int intimacy);
 
 // 상태 초기화
 void initGameState(GameState *state);
 
 // v2 이동/행동 함수
 void moveAndAct(GameState *state, char *catName);
-void moveCat(int *catPosition, int intimacy, char *catName);
 
 // v2 놀이기구 랜덤 배치 함수
 void placeToys(GameState *state);
