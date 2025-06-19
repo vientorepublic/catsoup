@@ -24,12 +24,6 @@ int main() {
   while (1) {
     system(CLEAR_CONSOLE);
     printStateV2(&state, catName);
-    int dice = rollDice();
-    if (dice <= (6 - state.intimacy) && state.mood > 0) {
-      state.mood--;
-      printf("아무 이유 없이 기분이 나빠집니다. 고양이니까? (기분 -1)\n");
-      sleep(1);
-    }
     moveAndAct(&state, catName);
     int producedCP = (state.mood > 0 ? state.mood - 1 : 0) + state.intimacy;
     state.cp += producedCP;

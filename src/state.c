@@ -76,52 +76,71 @@ void printStateV2(const GameState *state, const char *catName) {
 // v2: 고양이 이동(기분 기반), 행동(오브젝트와 상호작용)
 void moveAndAct(GameState *state, char *catName) {
   int dest = -1;
-  // 목적지 결정
+  // 목적지 결정 및 메시지 출력
   if (state->mood == 0) {
     dest = HOME_POS;
+    if (state->catPosition != HOME_POS)
+      printf("기분이 매우 나쁜 %s은(는) 집으로 향합니다.\n", catName);
   } else if (state->mood == 1) {
-    // 가장 가까운 놀이기구
-    int leftDist = (state->hasScratcher && state->scratcherPos != -1)
-                       ? abs(state->catPosition - state->scratcherPos)
-                       : 999;
-    int rightDist = (state->hasTower && state->towerPos != -1)
-                        ? abs(state->catPosition - state->towerPos)
-                        : 999;
-    if (leftDist == 999 && rightDist == 999) {
-      printf("방에 놀이기구가 없어 심심해서 기분이 더 나빠집니다! (기분 -1)\n");
-      if (state->mood > 0) state->mood--;
+    int hasToy = 0;
+    int toyPos = -1;
+    int leftDist = 999, rightDist = 999;
+    if (state->hasScratcher && state->scratcherPos != -1) {
+      leftDist = abs(state->catPosition - state->scratcherPos);
+      hasToy = 1;
+      toyPos = state->scratcherPos;
+    }
+    if (state->hasTower && state->towerPos != -1) {
+      rightDist = abs(state->catPosition - state->towerPos);
+      if (!hasToy || rightDist < leftDist) {
+        hasToy = 1;
+        toyPos = state->towerPos;
+      }
+    }
+    if (!hasToy) {
+      printf("놀거리가 없어서 기분이 매우 나빠집니다.\n");
+      if (state->mood > 0) state->mood = 0;
       sleep(1);
       return;
+    } else {
+      if (toyPos == state->scratcherPos)
+        printf("%s은(는) 심심해서 스크래처쪽으로 이동합니다.\n", catName);
+      else
+        printf("%s은(는) 심심해서 캣타워쪽으로 이동합니다.\n", catName);
+      dest = toyPos;
     }
-    dest = (leftDist <= rightDist) ? state->scratcherPos : state->towerPos;
   } else if (state->mood == 2) {
-    dest = state->catPosition;  // 제자리
+    dest = state->catPosition;
+    printf("%s은(는) 기분 좋게 식빵을 굽고 있습니다.\n", catName);
   } else if (state->mood == 3) {
     dest = BOWL_POS;
+    if (state->catPosition != BOWL_POS)
+      printf("%s은(는) 골골송을 부르며 수프를 만들러 갑니다.\n", catName);
   }
-  // 이동
-  state->catPosition = dest;
-  // 행동
+
+  // 한 칸씩 이동 (이미 도착 시 대기)
+  if (state->catPosition != dest) {
+    if (state->catPosition < dest)
+      state->catPosition++;
+    else if (state->catPosition > dest)
+      state->catPosition--;
+  }
+  // 행동 (도착지에서만)
   if (state->catPosition == HOME_POS) {
-    printf("%s은(는) 집에서 쉬며 기분이 좋아집니다! (기분 +1)\n", catName);
-    if (state->mood < 3) state->mood++;
-    sleep(1);
+    // 집 도착 시 추가 행동 없음
   } else if (state->catPosition == BOWL_POS) {
+    // 냄비 도착 시 수프 만들기
     const char *soups[] = {"감자 수프", "양송이 수프", "브로콜리 수프"};
     const char *selectedSoup = soups[rand() % 3];
-    printf("%s(이)가 %s를 만들었습니다!\n", catName, selectedSoup);
+    printf("%s이(가) %s를 만들었습니다!\n", catName, selectedSoup);
     state->soupCount++;
     sleep(1);
   } else if (state->hasScratcher && state->catPosition == state->scratcherPos) {
-    printf("스크래처에서 긁적긁적! 기분이 좋아집니다! (기분 +1)\n");
-    if (state->mood < 3) state->mood++;
-    sleep(1);
+    // 스크래처 도착 시 추가 행동 없음
   } else if (state->hasTower && state->catPosition == state->towerPos) {
-    printf("캣타워에서 점프! 기분이 아주 좋아집니다! (기분 +2)\n");
-    state->mood += 2;
-    if (state->mood > 3) state->mood = 3;
-    sleep(1);
+    // 캣타워 도착 시 추가 행동 없음
   }
+  sleep(1);
 }
 
 // v2: 놀이기구 랜덤 배치 함수
